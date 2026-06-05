@@ -8,7 +8,6 @@ const dbPath = path.join(__dirname, "..", "data.db");
 export const db = new Database(dbPath);
 db.pragma("journal_mode = WAL");
 
-// Schema. Note: tasks have no owner yet.
 db.exec(`
   CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -20,9 +19,16 @@ db.exec(`
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT NOT NULL,
     status TEXT NOT NULL DEFAULT 'open',
+    assigned_to INTEGER REFERENCES users(id),
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
   );
 `);
+
+// Migrate existing databases that predate this column.
+const cols = db.prepare("PRAGMA table_info(tasks)").all() as { name: string }[];
+if (!cols.some((c) => c.name === "assigned_to")) {
+  db.exec("ALTER TABLE tasks ADD COLUMN assigned_to INTEGER REFERENCES users(id)");
+}
 
 export interface User {
   id: number;
@@ -34,5 +40,6 @@ export interface Task {
   id: number;
   title: string;
   status: "open" | "done";
+  assigned_to: number | null;
   created_at: string;
 }
