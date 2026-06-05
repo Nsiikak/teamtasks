@@ -33,10 +33,14 @@ export function TaskList({
             style={{
               textDecoration: task.status === "done" ? "line-through" : "none",
               color: task.status === "done" ? "#999" : "#222",
+              flex: 1,
             }}
           >
             {task.title}
           </span>
+          {task.assignee_name && (
+            <span style={{ fontSize: 12, color: "#666" }}>{task.assignee_name}</span>
+          )}
         </li>
       ))}
     </ul>
