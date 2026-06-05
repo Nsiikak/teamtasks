@@ -11,7 +11,7 @@
 - How I handled tasks with no assignee: nullable `assigned_to` FK — unassigned is a valid permanent state, not a gap to fill. The filter dropdown defaults to "All assignees" so unassigned tasks are always visible unless you explicitly pick someone.
 - Single-select vs multi-select filter, and why: single-select. The use case is "show me Ada's tasks" not "show me Ada's and Bayo's tasks." Multi-select adds UI complexity for a case that's better served by just removing the filter.
 - How the assignee filter interacts with the existing status/search filter: purely additive — all three filters are ANDed server-side. Picking an assignee narrows within whatever status/search is already set.
-- Where the filter state lives (URL, local state, etc.) and why: React local state. URL params would be better for shareability and back-button support, but that's scope creep for a take-home. Noted under "if I had more time."
+- Where the filter state lives (URL, local state, etc.) and why: React local state. URL params would be better for shareability and back-button support, but that's scope creep for a take-home.
 
 **Anything I assumed instead of asking**
 - Reassigning a task after creation is supported at the API level (PATCH accepts `assigned_to`) but there's no UI for it — adding an inline edit felt out of scope given the time budget.
@@ -44,6 +44,6 @@
 
 ## Deployment (optional)
 
-- Live URL (if deployed):
-- How I hosted it:
-- What I'd harden before real production:
+- Live URL (if deployed): https://teamtasks-production-b444.up.railway.app
+- How I hosted it: Railway — single service running Express which serves both the API and the Vite build as static files. SQLite is persisted via a Railway volume with DB_PATH env var pointing to it. Database auto-seeds on first boot if empty.
+- What I'd harden before real production: move off SQLite to a proper database (Postgres), add auth so users can only see/edit their own tasks, rate-limit the API, and add proper error boundaries on the frontend.
