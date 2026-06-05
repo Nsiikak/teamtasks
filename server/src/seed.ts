@@ -6,10 +6,10 @@ db.exec("DELETE FROM users;");
 db.exec("DELETE FROM sqlite_sequence WHERE name IN ('tasks','users');");
 
 const users = [
-  { name: "Ada Obi", email: "ada@example.com" },
-  { name: "Bayo Tunde", email: "bayo@example.com" },
-  { name: "Chioma Eze", email: "chioma@example.com" },
-  { name: "Daniel Park", email: "daniel@example.com" },
+  { name: "Mr. Sheyman", email: "sheyman@example.com" },
+  { name: "Mr. Segun", email: "segun@example.com" },
+  { name: "Mr. Nsikak", email: "nsikak@example.com" },
+  { name: "Mr. Success", email: "success@example.com" },
 ];
 
 const insertUser = db.prepare("INSERT INTO users (name, email) VALUES (?, ?)");
