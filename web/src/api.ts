@@ -16,11 +16,12 @@ export interface User {
 export async function fetchTasks(filters: {
   status?: string;
   search?: string;
+  signal?: AbortSignal;
 }): Promise<Task[]> {
   const params = new URLSearchParams();
   if (filters.status) params.set("status", filters.status);
   if (filters.search) params.set("search", filters.search);
-  const res = await fetch(`${BASE}/tasks?${params.toString()}`);
+  const res = await fetch(`${BASE}/tasks?${params.toString()}`, { signal: filters.signal });
   return res.json();
 }
 

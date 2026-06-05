@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { fetchTasks, setTaskStatus, type Task } from "./api.js";
 import { TaskList } from "./components/TaskList.js";
 import { NewTaskForm } from "./components/NewTaskForm.js";
@@ -7,9 +7,15 @@ export function App() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [status, setStatus] = useState("");
   const [search, setSearch] = useState("");
+  const abortRef = useRef<AbortController | null>(null);
 
   const load = useCallback(() => {
-    fetchTasks({ status, search }).then(setTasks);
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+    fetchTasks({ status, search, signal: controller.signal })
+      .then(setTasks)
+      .catch((err) => { if (err.name !== "AbortError") throw err; });
   }, [status, search]);
 
   useEffect(() => {
